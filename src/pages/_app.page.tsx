@@ -1,17 +1,27 @@
+import { IFrameEthereumConnector } from "@ledgerhq/ledger-live-wagmi-connector";
 import { Flex, InfiniteLoader, StyleProvider } from "@ledgerhq/react-ui";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { allChains, configureChains, createClient, WagmiConfig } from "wagmi";
+import { chain, configureChains, createClient, WagmiConfig, } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
-import { publicProvider } from "wagmi/providers/public";
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 import "../../styles/globals.css";
 
-const { chains, provider } = configureChains(allChains, [publicProvider()]);
+// const { chains, provider } = configureChains(allChains, [publicProvider()]);
+
+const { chains, provider } = configureChains(
+  [chain.goerli],
+  [alchemyProvider({ alchemyId: 'cI7cEgqIWMg-aFL3TcHP9EDM0uMjmiZE' })],
+)
+
 
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors: [new InjectedConnector({ chains })],
+  connectors: [
+    new IFrameEthereumConnector({ chains, options: {} }),
+    new InjectedConnector({ chains }),
+  ],
   provider,
 });
 
